@@ -34,7 +34,18 @@ class Network(nn.Module):
         return q_values
     
 #Implement Experince Replay
-class 
+class replayMemo(object):
+    
+    def __init__(self, capacity):
+        self.capacity = capacity     #max no of instances you want to have in the memory replay
+        self.memory = []                #initialize empty list to store the transtion in it(100 events)
+   
+    #will append new event in the memory and make sure it has only 100 last events
+         
+    def push(self, event):      #event: tupleof four events (last state, new state st+1, last action ac, the last reward rt )
+        self.memory.append(event)
+         
+        
 
 
 
