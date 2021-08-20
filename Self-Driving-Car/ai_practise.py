@@ -78,8 +78,25 @@ class Dqn():
         #T= 7 :higher the temperature parameter is more sure will be the NN closer to 1 
         action = probs.multinomial()                                            #ramdom draw from probabality distribution to get action        
         return action.data[0,0]                                                 #data stored in 0,0 miltinomial prob
+    
+    
+    #process of fwd and bwd propagation     
+    def learn(self, batch_state, batch_next_state, batch_reward, batch_action):                         #marcov desicion process
+        outputs = self.model(batch_state).gather(1, batch_action.unsqueeze(1)).squeeze(1)               #the actions that were chosen we use .gather
+        next_outputs = self.model(batch_next_state).detach().max(1)[0]                                                     #            
+        target = self.gamma*next_outputs + batch_reward
+        td_loss =  F.smooth_l1_loss(outputs, target)                           #td temproral difference
+        #back prop the error
+        self.optimizer.zero_grad()
+        td_loss.backward(retain_variables = True)                              #back propagate
+        self.optimizer.step()                                                  #update the weight
+
+    
+    def update(self, reward, new_signal):   
+        new_state = torch.Tensor(new_signal).float().unsqueeze(0)              #new signal is input of 3 state of sensor and 2 orientations                                          
+        #update memory 
+        self.memory.push((self.last_state, new_state, torch.LongTensor([int(self.last_action)]), torch.LongTensor([self.last_reward])))
         
-    def 
         
         
         
